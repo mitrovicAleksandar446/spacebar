@@ -5,6 +5,7 @@ namespace App\Controller;
 use Michelf\MarkdownInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -20,8 +21,13 @@ class ArticleController extends AbstractController
 
     /**
      * @Route("/news/{slug}", name="article_show")
+     *
+     * @param string $slug
+     * @param MarkdownInterface $markdown
+     * @param AdapterInterface $cache
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function show(string $slug, MarkdownInterface $markdown)
+    public function show(string $slug, MarkdownInterface $markdown, AdapterInterface $cache)
     {
         $comments = [
             'I ate a normal rock once. It did NOT taste like bacon!',
@@ -41,7 +47,12 @@ Sausage tenderloin officia jerky nostrud. Laborum elit pastrami non, pig kevin b
 Do mollit deserunt prosciutto laborum. Duis sint tongue quis nisi. Capicola qui beef ribs dolore pariatur. Minim strip steak fugiat nisi est, meatloaf pig aute. Swine rump turducken nulla sausage. Reprehenderit pork belly tongue alcatra, shoulder excepteur in beef bresaola duis ham bacon eiusmod. Doner drumstick short loin, adipisicing cow cillum tenderloin.
 EOF;
 
-        $articelContent = $markdown->transform($articelContent);
+        $item = $cache->getItem('markdown_'.md5($articelContent));
+        if (!$item->isHit()) {
+            $item->set($markdown->transform($articelContent));
+            $cache->save($item);
+        }
+        $articelContent = $item->get();
 
         return $this->render('article/show.html.twig', [
             'title' => ucwords(str_replace('-', ' ', $slug)),
