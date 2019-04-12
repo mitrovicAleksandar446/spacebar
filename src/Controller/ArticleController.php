@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Service\MarkdownHelper;
+use Nexy\Slack\Client;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,10 +24,25 @@ class ArticleController extends AbstractController
      *
      * @param string $slug
      * @param MarkdownHelper $markdownHelper
+     * @param Client $slack
      * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Http\Client\Exception
      */
-    public function show(string $slug, MarkdownHelper $markdownHelper)
+    public function show(string $slug, MarkdownHelper $markdownHelper, Client $slack)
     {
+        if ($slug == 'khaaaaan') {
+            $message = $slack->createMessage();
+
+            $message
+                ->to('#spacebar-symfony-42')
+                ->from('Khan')
+                ->withIcon(':ghost:')
+                ->setText('This is an amazing message!')
+            ;
+
+            $slack->sendMessage($message);
+        }
+
         $comments = [
             'I ate a normal rock once. It did NOT taste like bacon!',
             'Woohoo! I\'m going on an all-asteroid diet!',
