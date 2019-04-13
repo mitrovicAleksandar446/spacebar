@@ -45,7 +45,7 @@ class SlackClient
 
         $slackMessage = $this->slack->createMessage();
 
-        $slackMessage->to('#spacebar-symfony-42')
+        $slackMessage
             ->from($from)
             ->withIcon(':ghost:')
             ->setText($message);
