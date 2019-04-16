@@ -24,7 +24,7 @@ class ArticleAdminController extends AbstractController
     {
         $article = new Article();
         $article->setTitle("Why Asteroids Taste Like Bacon")
-            ->setSlug("why-asteroids-taste-like-bacon" . rand(100, 999))
+            ->setSlug("why-asteroids-taste-like-bacon-" . rand(100, 999))
             ->setContent(<<<EOF
 Spicy jalapeno **bacon** ipsum dolor [amet](http://google.com) veniam shank in dolore. Ham hock nisi landjaeger cow, lorem proident beef ribs aute enim veniam ut cillum pork chuck picanha. Dolore reprehenderit labore minim pork belly spare ribs cupim short loin in. Elit exercitation eiusmod dolore cow turkey shank eu pork belly meatball non cupim.
 
