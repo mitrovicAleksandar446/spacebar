@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Article;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -24,8 +25,7 @@ class ArticleRepository extends ServiceEntityRepository
       */
     public function findAllPublishedOrderedByNewest()
     {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.published IS NOT NULL')
+        return $this->addPublishedQueryBuilder()
             ->orderBy('a.published', 'DESC')
             ->getQuery()
             ->getResult()
@@ -38,6 +38,17 @@ class ArticleRepository extends ServiceEntityRepository
 
         $query = $this->getEntityManager()->createQuery($dql);
         return $query->execute();
+    }
+
+    private function addPublishedQueryBuilder(QueryBuilder $qb = null)
+    {
+        return $this->getOrCreateQueryBuilder($qb)
+            ->andWhere('a.published IS NOT NULL');
+    }
+
+    private function getOrCreateQueryBuilder(QueryBuilder $qb = null)
+    {
+        return $qb ?: $this->createQueryBuilder('a');
     }
 
     /*
