@@ -42,6 +42,10 @@ EOF
             $article->setPublished(new \DateTime(sprintf('-%d days', rand(1, 100))));
         }
 
+        $article->setAuthor("Mike Ferengi")
+            ->setHeartCount(rand(1, 100))
+            ->setImage('asteroid.jpeg');
+
         $em->persist($article);
         $em->flush();
 
